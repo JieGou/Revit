@@ -1,5 +1,8 @@
 ﻿namespace BIMdance.Revit.Utils.Revit.Parameters.Shared;
 
+/// <summary>
+/// 共享参数定义类
+/// </summary>
 public class SharedParameterDefinition : BaseSharedParameterDefinition
 {
     public SharedParameterDefinition(

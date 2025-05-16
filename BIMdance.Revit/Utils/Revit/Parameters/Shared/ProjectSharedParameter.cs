@@ -5,15 +5,16 @@ public class ProjectSharedParameter
     public ProjectSharedParameter(
         BaseSharedParameterDefinition baseSharedParameterDefinition,
         BuiltInCategory category) :
-        this(baseSharedParameterDefinition, new List<BuiltInCategory> { category }) { }
-    
+        this(baseSharedParameterDefinition, new List<BuiltInCategory> { category })
+    { }
+
     public ProjectSharedParameter(
         BaseSharedParameterDefinition baseSharedParameterDefinition,
         IReadOnlyCollection<BuiltInCategory> categories)
     {
         if (categories.IsEmpty())
             throw new ArgumentException($"{nameof(categories)} must not be empty.");
-            
+
         BaseSharedParameterDefinition = baseSharedParameterDefinition;
         IsInstance = baseSharedParameterDefinition.IsInstance;
         Categories = categories;
@@ -23,8 +24,9 @@ public class ProjectSharedParameter
         BaseSharedParameterDefinition baseSharedParameterDefinition,
         bool isInstance,
         BuiltInCategory category) :
-        this(baseSharedParameterDefinition, isInstance, new List<BuiltInCategory> { category }) { }
-    
+        this(baseSharedParameterDefinition, isInstance, new List<BuiltInCategory> { category })
+    { }
+
     public ProjectSharedParameter(
         BaseSharedParameterDefinition baseSharedParameterDefinition,
         bool isInstance,

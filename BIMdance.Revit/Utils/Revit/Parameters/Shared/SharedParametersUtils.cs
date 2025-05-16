@@ -5,7 +5,13 @@ namespace BIMdance.Revit.Utils.Revit.Parameters.Shared;
 public class SharedParametersUtils : IDisposable
 {
     private readonly Document _document;
+    /// <summary>
+    /// 共享参数文件
+    /// </summary>
     private readonly string _applicationSharedParametersFile;
+    /// <summary>
+    /// 临时共享参数文件
+    /// </summary>
     private readonly string _temporarySharedParametersFile;
     private readonly DefinitionFileUtils _definitionFileUtils;
 
@@ -23,12 +29,12 @@ public class SharedParametersUtils : IDisposable
         _document.Transaction(_ =>
         {
             var documentSharedParameterGuids = GetSharedParameterGuids();
-            var createdParameters = sharedParameters.Where(n => documentSharedParameterGuids.Contains(n.Guid)).ToList();
-            var notCreatedParameters = sharedParameters.Where(n => false == documentSharedParameterGuids.Contains(n.Guid)).ToList();
+            var alreadyCreatedParameters = sharedParameters.Where(n => documentSharedParameterGuids.Contains(n.Guid)).ToList();
+            var toCreatingParameters = sharedParameters.Where(n => false == documentSharedParameterGuids.Contains(n.Guid)).ToList();
 
-            CheckSharedParameterCategories(createdParameters);
+            CheckSharedParameterCategories(alreadyCreatedParameters);
 
-            notCreatedParameters.ForEach(AddSharedParameterToProject);
+            toCreatingParameters.ForEach(AddSharedParameterToProject);
 
         }, TransactionNames.Parameters_Add);
     }
@@ -218,7 +224,12 @@ public class SharedParametersUtils : IDisposable
         var guid = sharedParameterDefinition.Guid;
 
         if (sharedParameterDefinition is SharedParameterDefinition s && _definitionFileUtils.GetParameterName(guid) is null)
-            _definitionFileUtils.AddSharedParameter(guid, s.Name, ParameterTypeConverter.GetParameterTypeName(s.ParameterType), s.Description, visible: s.IsVisible, userModifiable: s.IsUserModifiable);
+            _definitionFileUtils.AddSharedParameter(guid,
+                                                    s.Name,
+                                                    ParameterTypeConverter.GetParameterTypeName(s.ParameterType),
+                                                    s.Description,
+                                                    visible: s.IsVisible,
+                                                    userModifiable: s.IsUserModifiable);
 
         _document.Application.SharedParametersFilename = _temporarySharedParametersFile;
         var groupName = _definitionFileUtils.GetGroupName(guid) ?? throw new KeyNotFoundException($"{nameof(Guid)} [{guid}] not found in the file {_temporarySharedParametersFile}");
